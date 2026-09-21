@@ -1,2 +1,5 @@
 <?php
-// Edit document page: ?id=..., GET shows form with data, POST validates and updates
+
+require __DIR__ . '/core/init.php';
+
+DocumentController::update();

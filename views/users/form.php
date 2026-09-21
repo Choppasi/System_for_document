@@ -1,3 +1,6 @@
+<?php /** @var string $formAction */ ?>
+<?php /** @var array<string, mixed> $user */ ?>
+
 <h1 class="page-title"><?= e($formTitle ?? 'Добавление пользователя') ?></h1>
 
 <?php if (!empty($errors)): ?>

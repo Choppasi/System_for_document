@@ -1,2 +1,5 @@
 <?php
-// Add document page: GET shows form, POST validates and creates document
+
+require __DIR__ . '/core/init.php';
+
+DocumentController::create();

@@ -109,5 +109,15 @@ class User
 
         return $stmt->fetchColumn() > 0;
     }
+
+    public static function allForSelect(): array
+    {
+        $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare('SELECT id, fio FROM users ORDER BY fio');
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
     
 }

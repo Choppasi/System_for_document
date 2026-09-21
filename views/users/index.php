@@ -50,10 +50,9 @@
     <a class="add-link" href="user_create.php">Добавить</a>
 
     <?php
-    // пагинация подключается здесь (этап 7):
-    // $currentPage = $page ?? 1;
-    // $totalPages  = $totalPages ?? 1;
-    // $pageParam   = 'page';
-    // require __DIR__ . '/../partials/pagination.php';
+    $currentPage = $page ?? 1;
+    $totalPages  = $totalPages ?? 1;
+    $pageParam   = 'page';
+    require __DIR__ . '/../partials/pagination.php';
     ?>
 </div>
