@@ -1,5 +1,4 @@
 <?php
-// PDO singleton connection, reads credentials from config/config.php
 class Database {
 
     private static ?PDO $pdo = null;

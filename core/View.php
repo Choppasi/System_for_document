@@ -1,5 +1,5 @@
 <?php
-// Simple view renderer: render($template, $data) includes files from /views
+
 Class View
 {
     public static function render(string $template, array $data = []): void

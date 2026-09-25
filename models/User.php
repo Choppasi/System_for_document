@@ -1,5 +1,5 @@
 <?php
-// User model: CRUD, search by name (LIKE), pagination (5 per page)
+
 class User
 {
     public static function all( string $search = '', int $page = 1, int $perPage = 5): array

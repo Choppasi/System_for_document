@@ -1,5 +1,5 @@
 <?php
-// UserController: index (list), create, edit, delete actions for users
+
 
 
 class UserController
