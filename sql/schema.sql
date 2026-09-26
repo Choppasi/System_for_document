@@ -1,4 +1,4 @@
--- SQL schema: CREATE DATABASE + tables `users` and `documents` (FK user_id, ON DELETE CASCADE)
+
 
 CREATE DATABASE IF NOT EXISTS `edms`
   DEFAULT CHARACTER SET utf8mb4
