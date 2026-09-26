@@ -1,3 +1,6 @@
+<?php /** @var string $formAction */ ?>
+<?php /** @var mixed $allUsers */ ?>
+
 <h1 class="page-title"><?= e($formTitle ?? 'Добавление документа') ?></h1>
 
 <?php if (!empty($errors)): ?>
