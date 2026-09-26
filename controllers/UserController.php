@@ -58,7 +58,7 @@ class UserController
             'phone' => trim($_POST['phone'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
             'login' => trim($_POST['login'] ?? ''),
-            'password' => trim($_POST['password'] ?? ''),
+            'password' => password_hash(trim($_POST['password'] ?? ''), PASSWORD_DEFAULT),
         ];
 
         $errors = self::validate($data);
@@ -84,7 +84,7 @@ class UserController
             
             $id = (int)($_GET['id'] ?? 0);
 
-            $user = User::find($id);
+            $user = User::findID($id);
             if ($user === null){
                 redirect('index.php');
             }
@@ -103,7 +103,7 @@ class UserController
         $id = (int)($_POST['id'] ?? 0);
         
 
-        $user = User::find($id);
+        $user = User::findID($id);
 
         if ($user === null) {
             redirect('index.php');
@@ -115,7 +115,7 @@ class UserController
             'phone' => trim($_POST['phone'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
             'login' => trim($_POST['login'] ?? ''),
-            'password' => trim($_POST['password'] ?? ''),
+            'password' => password_hash(trim($_POST['password'] ?? ''), PASSWORD_DEFAULT),
         ];
 
         $errors = self::validate($data, $id);
