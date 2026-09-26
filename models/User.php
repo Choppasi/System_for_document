@@ -44,7 +44,7 @@ class User
     }
 
 
-    public static function find(int $id): ?array
+    public static function findID(int $id): ?array
     {
         $pdo = Database::getConnection();
 
@@ -52,6 +52,17 @@ class User
         $stmt->execute((['id' => $id]));
 
         return $stmt->fetch() ?:null;
+    }
+
+    public static function findLogin(string $login): ?array
+    {
+        $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE login = :login');
+        $stmt->execute(['login' => $login]);
+
+        return $stmt->fetch() ?: null;
+
     }
 
     public static function create(array $data): int

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+session_start();
+
 require __DIR__ . '/../config/config.php';
 require __DIR__ . '/Database.php';
 require __DIR__ . '/View.php';
