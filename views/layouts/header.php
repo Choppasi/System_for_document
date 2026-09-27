@@ -171,3 +171,9 @@
 </head>
 <body>
 <div class="container">
+    <?php if (!empty($_SESSION['user_id'])): ?>
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px; font-size:14px; margin-bottom:8px;">
+        <span><?= e($_SESSION['user_fio'] ?? '') ?></span>
+        <a href="/logout.php" style="color:#e74c3c;">Выйти</a>
+    </div>
+<?php endif; ?>
