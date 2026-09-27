@@ -50,3 +50,17 @@ function csrf_verify(): bool
     $token = $_POST['csrf_token'] ?? '';
     return is_string($token) && hash_equals($_SESSION['csrf_token'] ?? '', $token);
 }
+
+function require_auth(): void
+{
+    if (empty($_SESSION['user_id'])) {
+        redirect('/authorization/login.php');
+    }
+}
+
+function logout(): void
+{
+    $_SESSION = [];
+    session_destroy();
+    redirect('/authorization/login.php');
+}

@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/core/init.php';
 
+require_auth();
+
 
 
 $search = trim($_GET['search'] ?? '');
@@ -23,7 +25,7 @@ $dpage         = min($dpage, $docTotalPages);
 $documents     = Document::all($docSearch, $dpage, 5, $userId);
 
 
-$filteredUser = $userId > 0 ? User::find($userId) : null;
+$filteredUser = $userId > 0 ? User::findID($userId) : null;
 
 require __DIR__ . '/views/layouts/header.php';
 require __DIR__ . '/views/users/index.php';
