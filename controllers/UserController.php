@@ -1,10 +1,10 @@
 <?php
 
-
-
 class UserController
 {
-    public static function validate(array $data, int $excludeID = 0): array
+    public function __construct(private User $userModel) {}
+
+    public function validate(array $data, int $excludeID = 0): array
     {
         $errors = [];
 
@@ -23,24 +23,22 @@ class UserController
         }
 
         if ($data['password'] === ''){
-            $errors[] = 'Укажите пароль'; 
+            $errors[] = 'Укажите пароль';
         }
 
-        if ($data['email'] !== '' && User::emailExists($data['email'], $excludeID)){
-             $errors[] = 'E-mail уже занят';
+        if ($data['email'] !== '' && $this->userModel->emailExists($data['email'], $excludeID)){
+            $errors[] = 'E-mail уже занят';
         }
 
-        if ($data['login'] !== '' && User::loginExists($data['login'], $excludeID)){
+        if ($data['login'] !== '' && $this->userModel->loginExists($data['login'], $excludeID)){
             $errors[] = 'Логин уже занят';
         }
 
         return $errors;
-
     }
 
-    public static function create(): void
+    public function create(): void
     {
-
         if($_SERVER['REQUEST_METHOD'] !== 'POST'){
             View::render('users/form', [
                 'errors' => [],
@@ -61,7 +59,7 @@ class UserController
             'password' => trim($_POST['password'] ?? ''),
         ];
 
-        $errors = self::validate($data);
+        $errors = $this->validate($data);
 
         if($errors !== []){
             View::render('users/form', [
@@ -74,17 +72,20 @@ class UserController
             return;
         }
 
-        User::create($data);
+        // хэшируем пароль только после валидации
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        $this->userModel->create($data);
         redirect('index.php');
     }
 
-    public static function update(): void
+    public function update(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
-            
+
             $id = (int)($_GET['id'] ?? 0);
 
-            $user = User::find($id);
+            $user = $this->userModel->findID($id);
             if ($user === null){
                 redirect('index.php');
             }
@@ -101,9 +102,8 @@ class UserController
         };
 
         $id = (int)($_POST['id'] ?? 0);
-        
 
-        $user = User::find($id);
+        $user = $this->userModel->findID($id);
 
         if ($user === null) {
             redirect('index.php');
@@ -118,7 +118,7 @@ class UserController
             'password' => trim($_POST['password'] ?? ''),
         ];
 
-        $errors = self::validate($data, $id);
+        $errors = $this->validate($data, $id);
 
         if ($errors !== []){
             View::render('users/form', [
@@ -132,11 +132,12 @@ class UserController
             return;
         }
 
-        User::update($id, $data);
+        // если пароль не меняли (в поле тот же хэш) — оставляем его как есть
+        if ($data['password'] !== $user['password']) {
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+
+        $this->userModel->update($id, $data);
         redirect('index.php');
     }
-
-
-    
-
 }

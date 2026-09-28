@@ -2,7 +2,12 @@
 
 class DocumentController
 {
-    public static function validate(array $data, array $allUsers): array
+    public function __construct(
+        private Document $documentModel,
+        private User $userModel
+    ) {}
+
+    public function validate(array $data, array $allUsers): array
     {
         $errors = [];
 
@@ -29,9 +34,9 @@ class DocumentController
         return $errors;
     }
 
-    public static function create(): void
+    public function create(): void
     {
-        $allUsers = User::allForSelect();
+        $allUsers = $this->userModel->allForSelect();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             View::render('documents/form', [
@@ -52,7 +57,7 @@ class DocumentController
             'doc_type'    => trim($_POST['doc_type'] ?? ''),
         ];
 
-        $errors = self::validate($data, $allUsers);
+        $errors = $this->validate($data, $allUsers);
 
         if ($errors !== []) {
             View::render('documents/form', [
@@ -66,18 +71,18 @@ class DocumentController
             return;
         }
 
-        Document::create($data);
+        $this->documentModel->create($data);
         redirect('index.php');
     }
 
-    public static function update(): void
+    public function update(): void
     {
-        $allUsers = User::allForSelect();
+        $allUsers = $this->userModel->allForSelect();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $id = (int)($_GET['id'] ?? 0);
 
-            $doc = Document::find($id);
+            $doc = $this->documentModel->find($id);
             if ($doc === null) {
                 redirect('index.php');
             }
@@ -95,7 +100,7 @@ class DocumentController
 
         $id = (int)($_POST['id'] ?? 0);
 
-        $doc = Document::find($id);
+        $doc = $this->documentModel->find($id);
         if ($doc === null) {
             redirect('index.php');
         }
@@ -107,7 +112,7 @@ class DocumentController
             'doc_type'    => trim($_POST['doc_type'] ?? ''),
         ];
 
-        $errors = self::validate($data, $allUsers);
+        $errors = $this->validate($data, $allUsers);
 
         if ($errors !== []) {
             View::render('documents/form', [
@@ -121,8 +126,7 @@ class DocumentController
             return;
         }
 
-        Document::update($id, $data);
+        $this->documentModel->update($id, $data);
         redirect('index.php');
     }
-
 }

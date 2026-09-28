@@ -4,7 +4,7 @@ require __DIR__.'/core/init.php';
 
 $id = (int)$_GET['id'];
 if ($id > 0){
-    User::delete($id);
+    $userModel->delete($id);
 }
 
 redirect('index.php');

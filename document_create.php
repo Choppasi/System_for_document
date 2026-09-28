@@ -2,4 +2,4 @@
 
 require __DIR__ . '/core/init.php';
 
-DocumentController::create();
+$documentController->create();
