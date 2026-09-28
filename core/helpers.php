@@ -35,3 +35,32 @@ function qs(array $overrides = []): string
     $params = array_filter($params, static fn($v) => $v !== '' && $v !== null);
     return $params === [] ? 'index.php' : 'index.php?'.http_build_query($params);
 } 
+
+function csrf_token(): string
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+// Проверяет CSRF-токен из POST-запроса
+function csrf_verify(): bool
+{
+    $token = $_POST['csrf_token'] ?? '';
+    return is_string($token) && hash_equals($_SESSION['csrf_token'] ?? '', $token);
+}
+
+function require_auth(): void
+{
+    if (empty($_SESSION['user_id'])) {
+        redirect('/authorization/login.php');
+    }
+}
+
+function logout(): void
+{
+    $_SESSION = [];
+    session_destroy();
+    redirect('/authorization/login.php');
+}

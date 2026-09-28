@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/core/init.php';
 
+require_auth();
+
 
 
 $search = trim($_GET['search'] ?? '');
