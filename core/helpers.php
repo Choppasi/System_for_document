@@ -44,7 +44,7 @@ function csrf_token(): string
     return $_SESSION['csrf_token'];
 }
 
-// Проверяет CSRF-токен из POST-запроса
+
 function csrf_verify(): bool
 {
     $token = $_POST['csrf_token'] ?? '';
