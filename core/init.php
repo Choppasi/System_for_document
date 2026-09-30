@@ -50,7 +50,7 @@ register_shutdown_function(static function (): void {
     };
 });
 
-// --- Сборка зависимостей (DI-контейнер) ---
+
 $pdo                = Database::getConnection();
 $userModel          = new User($pdo);
 $documentModel      = new Document($pdo);
