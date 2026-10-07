@@ -38,7 +38,6 @@ class UserController
             return;
         }
 
-        // хэшируем пароль только после валидации
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
         $this->userModel->create($data);
@@ -93,7 +92,6 @@ class UserController
             return;
         }
 
-        // если пароль не меняли (в поле тот же хэш) — оставляем его как есть
         if ($data['password'] !== $user['password']) {
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }

@@ -41,17 +41,17 @@ class App
 
         self::registerErrorHandlers();
 
-        $pdo                = Database::getConnection();
-        $request            = new Request();
-        $userModel          = new User($pdo);
-        $documentModel      = new Document($pdo);
-        $userValidator      = new UserValidator($userModel);
-        $documentValidator  = new DocumentValidator($userModel);
-        $homeController     = new HomeController($userModel, $documentModel, $request);
-        $userController     = new UserController($userModel, $request, $userValidator);
+        $pdo = Database::getConnection();
+        $request = new Request();
+        $userModel = new User($pdo);
+        $documentModel = new Document($pdo);
+        $userValidator = new UserValidator($userModel);
+        $documentValidator = new DocumentValidator($userModel);
+        $homeController = new HomeController($userModel, $documentModel, $request);
+        $userController = new UserController($userModel, $request, $userValidator);
         $documentController = new DocumentController($documentModel, $userModel, $request, $documentValidator);
-        $authController     = new AuthorizationController($userModel, $request);
-        $logController      = new LogController();
+        $authController = new AuthorizationController($userModel, $request);
+        $logController = new LogController();
 
         return compact(
             'pdo',
@@ -74,20 +74,20 @@ class App
         $auth = $context['authController'];
         $log  = $context['logController'];
 
-        $router->add(['GET', 'POST'], '/',                 [$home, 'index']);
+        $router->add(['GET', 'POST'], '/', [$home, 'index']);
 
-        $router->add(['GET', 'POST'], '/users/create',     [$user, 'create']);
-        $router->add(['GET', 'POST'], '/users/edit',       [$user, 'update']);
-        $router->add(['GET', 'POST'], '/users/delete',     [$user, 'delete']);
+        $router->add(['GET', 'POST'], '/users/create', [$user, 'create']);
+        $router->add(['GET', 'POST'], '/users/edit', [$user, 'update']);
+        $router->add(['GET', 'POST'], '/users/delete', [$user, 'delete']);
 
         $router->add(['GET', 'POST'], '/documents/create', [$doc, 'create']);
-        $router->add(['GET', 'POST'], '/documents/edit',   [$doc, 'update']);
+        $router->add(['GET', 'POST'], '/documents/edit', [$doc, 'update']);
         $router->add(['GET', 'POST'], '/documents/delete', [$doc, 'delete']);
 
-        $router->add(['GET', 'POST'], '/login',            [$auth, 'login']);
-        $router->add('GET',           '/logout',           [$auth, 'logout']);
+        $router->add(['GET', 'POST'], '/login', [$auth, 'login']);
+        $router->add('GET', '/logout', [$auth, 'logout']);
 
-        $router->add('GET',           '/logs',             [$log, 'index']);
+        $router->add('GET', '/logs', [$log, 'index']);
     }
 
     private static function registerErrorHandlers(): void

@@ -25,7 +25,6 @@
 
         .section { margin-bottom: 48px; }
 
-        /* --- поиск --- */
         .search-form {
             display: flex;
             gap: 8px;
@@ -40,7 +39,6 @@
             font-size: 14px;
         }
 
-        /* --- кнопки --- */
         .btn {
             display: inline-block;
             padding: 8px 16px;
@@ -56,7 +54,6 @@
         .btn-secondary { background: #95a5a6; }
         .btn-secondary:hover { background: #7f8c8d; }
 
-        /* --- таблицы --- */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -89,7 +86,6 @@
 
         .add-link { display: inline-block; margin-top: 12px; font-size: 14px; }
 
-        /* --- плашка фильтра по пользователю --- */
         .filter-banner {
             background: #eaf4fd;
             border: 1px solid #bcdcf5;
@@ -99,7 +95,6 @@
             font-size: 14px;
         }
 
-        /* --- ошибки формы --- */
         .errors {
             background: #fdecea;
             border: 1px solid #f5c6c2;
@@ -111,7 +106,6 @@
             font-size: 14px;
         }
 
-        /* --- формы --- */
         .form-card {
             background: #fff;
             border-radius: 8px;
@@ -147,7 +141,6 @@
 
         .form-group textarea { min-height: 90px; resize: vertical; }
 
-        /* --- пагинация --- */
         .pagination { margin-top: 14px; font-size: 14px; }
         .pagination a, .pagination span {
             display: inline-block;
@@ -168,7 +161,6 @@
             pointer-events: none;
         }
 
-        /* --- логи --- */
         .muted { color: #8a94a6; font-size: 13px; }
 
         .log-toolbar {
