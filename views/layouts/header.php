@@ -167,6 +167,39 @@
             color: #aab4c0;
             pointer-events: none;
         }
+
+        /* --- логи --- */
+        .muted { color: #8a94a6; font-size: 13px; }
+
+        .log-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .log {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-family: "SF Mono", Menlo, Consolas, monospace;
+            font-size: 12.5px;
+            line-height: 1.5;
+            max-height: 70vh;
+            overflow: auto;
+        }
+
+        .log-line {
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .log-line:last-child { border-bottom: none; }
+        .log-error { color: #f38ba8; }
+        .log-warning { color: #f9e2af; }
+        .log-fatal { color: #eba0ac; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -174,6 +207,7 @@
     <?php if (!empty($_SESSION['user_id'])): ?>
     <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px; font-size:14px; margin-bottom:8px;">
         <span><?= e($_SESSION['user_fio'] ?? '') ?></span>
-        <a href="/logout.php" style="color:#e74c3c;">Выйти</a>
+        <a href="/logs">Логи</a>
+        <a href="/logout" style="color:#e74c3c;">Выйти</a>
     </div>
 <?php endif; ?>

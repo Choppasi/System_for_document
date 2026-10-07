@@ -4,60 +4,32 @@ class DocumentController
 {
     public function __construct(
         private Document $documentModel,
-        private User $userModel
+        private User $userModel,
+        private Request $request,
+        private DocumentValidator $validator
     ) {}
-
-    public function validate(array $data, array $allUsers): array
-    {
-        $errors = [];
-
-        if($data['name'] ===''){
-            $errors[] = 'Укажите наименование';
-        }
-
-        if (!in_array($data['doc_type'], ['Excel', 'Word', 'TXT'], true)) {
-            $errors[] = 'Выберите правильный тип документа';
-        }
-
-        $userExists = false;
-        foreach ($allUsers as $user) {
-            if ((int)$user['id'] === (int)$data['user_id']){
-                $userExists = true;
-                break;
-            }
-        }
-
-        if (!$userExists){
-            $errors[] = 'Пользователь не найден';
-        }
-
-        return $errors;
-    }
 
     public function create(): void
     {
+        require_auth();
+
         $allUsers = $this->userModel->allForSelect();
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if (!$this->request->isPost()) {
             View::render('documents/form', [
                 'errors'      => [],
                 'doc'         => [],
                 'allUsers'    => $allUsers,
                 'formTitle'   => 'Добавление документа',
-                'formAction'  => 'document_create.php',
+                'formAction'  => '/documents/create',
                 'submitLabel' => 'Добавить',
             ]);
             return;
         }
 
-        $data = [
-            'user_id'     => (int)($_POST['user_id'] ?? 0),
-            'name'        => trim($_POST['name'] ?? ''),
-            'description' => trim($_POST['description'] ?? ''),
-            'doc_type'    => trim($_POST['doc_type'] ?? ''),
-        ];
+        $data = $this->formData();
 
-        $errors = $this->validate($data, $allUsers);
+        $errors = $this->validator->validate($data);
 
         if ($errors !== []) {
             View::render('documents/form', [
@@ -65,26 +37,28 @@ class DocumentController
                 'doc'         => $data,
                 'allUsers'    => $allUsers,
                 'formTitle'   => 'Добавление документа',
-                'formAction'  => 'document_create.php',
+                'formAction'  => '/documents/create',
                 'submitLabel' => 'Добавить',
             ]);
             return;
         }
 
         $this->documentModel->create($data);
-        redirect('index.php');
+        redirect('/');
     }
 
     public function update(): void
     {
+        require_auth();
+
         $allUsers = $this->userModel->allForSelect();
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $id = (int)($_GET['id'] ?? 0);
+        if (!$this->request->isPost()) {
+            $id = $this->request->getInt('id');
 
             $doc = $this->documentModel->find($id);
             if ($doc === null) {
-                redirect('index.php');
+                redirect('/');
             }
 
             View::render('documents/form', [
@@ -92,27 +66,22 @@ class DocumentController
                 'doc'         => $doc,
                 'allUsers'    => $allUsers,
                 'formTitle'   => 'Редактирование документа',
-                'formAction'  => 'document_edit.php',
+                'formAction'  => '/documents/edit',
                 'submitLabel' => 'Изменить',
             ]);
             return;
         }
 
-        $id = (int)($_POST['id'] ?? 0);
+        $id = $this->request->postInt('id');
 
         $doc = $this->documentModel->find($id);
         if ($doc === null) {
-            redirect('index.php');
+            redirect('/');
         }
 
-        $data = [
-            'user_id'     => (int)($_POST['user_id'] ?? 0),
-            'name'        => trim($_POST['name'] ?? ''),
-            'description' => trim($_POST['description'] ?? ''),
-            'doc_type'    => trim($_POST['doc_type'] ?? ''),
-        ];
+        $data = $this->formData();
 
-        $errors = $this->validate($data, $allUsers);
+        $errors = $this->validator->validate($data);
 
         if ($errors !== []) {
             View::render('documents/form', [
@@ -120,13 +89,35 @@ class DocumentController
                 'doc'         => array_merge($doc, $data),
                 'allUsers'    => $allUsers,
                 'formTitle'   => 'Редактирование документа',
-                'formAction'  => 'document_edit.php',
+                'formAction'  => '/documents/edit',
                 'submitLabel' => 'Изменить',
             ]);
             return;
         }
 
         $this->documentModel->update($id, $data);
-        redirect('index.php');
+        redirect('/');
+    }
+
+    public function delete(): void
+    {
+        require_auth();
+
+        $id = $this->request->getInt('id');
+        if ($id > 0) {
+            $this->documentModel->delete($id);
+        }
+
+        redirect('/');
+    }
+
+    private function formData(): array
+    {
+        return [
+            'user_id'     => $this->request->postInt('user_id'),
+            'name'        => $this->request->postString('name'),
+            'description' => $this->request->postString('description'),
+            'doc_type'    => $this->request->postString('doc_type'),
+        ];
     }
 }

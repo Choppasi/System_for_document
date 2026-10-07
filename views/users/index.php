@@ -1,11 +1,11 @@
 <div class="section" id="users">
     <h1 class="page-title">Пользователи</h1>
 
-    <form class="search-form" method="get" action="index.php">
+    <form class="search-form" method="get" action="/">
         <input type="text" name="search" placeholder="Поиск по ФИО" value="<?= e($search ?? '') ?>">
         <button type="submit" class="btn">Найти</button>
         <?php if (!empty($search)): ?>
-            <a class="btn btn-secondary" href="index.php">Сбросить</a>
+            <a class="btn btn-secondary" href="/">Сбросить</a>
         <?php endif; ?>
     </form>
 
@@ -36,8 +36,8 @@
                     <td><?= e($user['email']) ?></td>
                     <td><?= fmt_date($user['created_at']) ?></td>
                     <td class="actions">
-                        <a href="user_edit.php?id=<?= e($user['id']) ?>">Редактировать</a>
-                        <a class="danger" href="user_delete.php?id=<?= e($user['id']) ?>"
+                        <a href="/users/edit?id=<?= e($user['id']) ?>">Редактировать</a>
+                        <a class="danger" href="/users/delete?id=<?= e($user['id']) ?>"
                            onclick="return confirm('Удалить пользователя? Его документы также будут удалены.')">Удалить</a>
                         <a href="<?= qs(['user_id' => $user['id'], 'dpage' => null]) ?>">Документы</a>
                     </td>
@@ -47,7 +47,7 @@
         </tbody>
     </table>
 
-    <a class="add-link" href="user_create.php">Добавить</a>
+    <a class="add-link" href="/users/create">Добавить</a>
 
     <?php
     $currentPage = $page ?? 1;

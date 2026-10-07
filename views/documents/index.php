@@ -8,7 +8,7 @@
         </div>
     <?php endif; ?>
 
-    <form class="search-form" method="get" action="index.php">
+    <form class="search-form" method="get" action="/">
         <?php if (!empty($userId)): ?>
             <input type="hidden" name="user_id" value="<?= e($userId) ?>">
         <?php endif; ?>
@@ -44,8 +44,8 @@
                     <td><?= fmt_date($doc['created_at']) ?></td>
                     <td><?= fmt_date($doc['updated_at']) ?></td>
                     <td class="actions">
-                        <a href="document_edit.php?id=<?= e($doc['id']) ?>">Редактировать</a>
-                        <a class="danger" href="document_delete.php?id=<?= e($doc['id']) ?>"
+                        <a href="/documents/edit?id=<?= e($doc['id']) ?>">Редактировать</a>
+                        <a class="danger" href="/documents/delete?id=<?= e($doc['id']) ?>"
                            onclick="return confirm('Удалить документ?')">Удалить</a>
                     </td>
                 </tr>
@@ -54,7 +54,7 @@
         </tbody>
     </table>
 
-    <a class="add-link" href="document_create.php">Добавить</a>
+    <a class="add-link" href="/documents/create">Добавить</a>
 
     <?php
     $currentPage = $dpage ?? 1;

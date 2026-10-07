@@ -1,6 +1,7 @@
 <?php /** @var string $formAction */ ?>
 <?php /** @var string $login */ ?>
 <?php /** @var array<int, string> $errors */ ?>
+<?php /** @var string $csrfField */ ?>
 
 <h1 class="page-title"><?= e($formTitle ?? 'Авторизация') ?></h1>
 
@@ -14,7 +15,7 @@
 
 <div class="form-card">
     <form method="post" action="<?= e($formAction) ?>">
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+        <?= $csrfField ?>
 
         <div class="form-group">
             <label>Логин <span class="req">*</span></label>

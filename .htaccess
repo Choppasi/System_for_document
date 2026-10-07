@@ -1,0 +1,11 @@
+Options -Indexes
+
+<FilesMatch "\.(log|sql)$">
+    Require all denied
+</FilesMatch>
+
+<Files "config.php">
+    Require all denied
+</Files>
+
+FallbackResource /index.php

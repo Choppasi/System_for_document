@@ -2,7 +2,7 @@
 
 class Logger
 {
-    private const LOG_FILE = __DIR__ . '/../logs/app.log';
+    private const LOG_FILE = __DIR__ . '/../storage/logs/app.log';
 
     public static function log(string $level, string $message, string $context = ''): void
     {

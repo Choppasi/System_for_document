@@ -45,7 +45,7 @@
             <input type="password" name="password" value="<?= old('password', $user['password'] ?? '') ?>">
         </div>
         <button type="submit" class="btn"><?= e($submitLabel ?? 'Добавить') ?></button>
-        <a class="btn btn-secondary" href="index.php">Отмена</a>
+        <a class="btn btn-secondary" href="/">Отмена</a>
         
     </form>
 </div>

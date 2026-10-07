@@ -2,71 +2,37 @@
 
 class UserController
 {
-    public function __construct(private User $userModel) {}
-
-    public function validate(array $data, int $excludeID = 0): array
-    {
-        $errors = [];
-
-        if ($data['fio'] === ''){
-            $errors[] = 'Укажите контактное лицо (ФИО)';
-        }
-
-        if ($data['email'] === ''){
-            $errors[] = 'Укажите E-mail';
-        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
-            $errors[] = 'Некорректный формат E-mail';
-        }
-
-        if ($data['login'] === ''){
-            $errors[] = 'Укажите логин';
-        }
-
-        if ($data['password'] === ''){
-            $errors[] = 'Укажите пароль';
-        }
-
-        if ($data['email'] !== '' && $this->userModel->emailExists($data['email'], $excludeID)){
-            $errors[] = 'E-mail уже занят';
-        }
-
-        if ($data['login'] !== '' && $this->userModel->loginExists($data['login'], $excludeID)){
-            $errors[] = 'Логин уже занят';
-        }
-
-        return $errors;
-    }
+    public function __construct(
+        private User $userModel,
+        private Request $request,
+        private UserValidator $validator
+    ) {}
 
     public function create(): void
     {
-        if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+        require_auth();
+
+        if (!$this->request->isPost()) {
             View::render('users/form', [
                 'errors' => [],
                 'user' => [],
                 'formTitle' => 'Добавление пользователя',
-                'formAction' => 'user_create.php',
+                'formAction' => '/users/create',
                 'submitLabel' => 'Добавить',
             ]);
             return;
         }
 
-        $data = [
-            'fio' => trim($_POST['fio'] ?? ''),
-            'city' => trim($_POST['city'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'login' => trim($_POST['login'] ?? ''),
-            'password' => trim($_POST['password'] ?? ''),
-        ];
+        $data = $this->formData();
 
-        $errors = $this->validate($data);
+        $errors = $this->validator->validate($data);
 
         if($errors !== []){
             View::render('users/form', [
                 'errors'      => $errors,
                 'user'        => [],
                 'formTitle'   => 'Добавление пользователя',
-                'formAction'  => 'user_create.php',
+                'formAction'  => '/users/create',
                 'submitLabel' => 'Добавить',
             ]);
             return;
@@ -76,56 +42,51 @@ class UserController
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
         $this->userModel->create($data);
-        redirect('index.php');
+        redirect('/');
     }
 
     public function update(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
+        require_auth();
 
-            $id = (int)($_GET['id'] ?? 0);
+        if (!$this->request->isPost()) {
+
+            $id = $this->request->getInt('id');
 
             $user = $this->userModel->findID($id);
             if ($user === null){
-                redirect('index.php');
+                redirect('/');
             }
 
             View::render('users/form', [
             'errors'      => [],
             'user'        => $user,
             'formTitle'   => 'Редактирование пользователя',
-            'formAction'  => 'user_edit.php',
+            'formAction'  => '/users/edit',
             'submitLabel' => 'Изменить',
             ]);
             return;
 
         };
 
-        $id = (int)($_POST['id'] ?? 0);
+        $id = $this->request->postInt('id');
 
         $user = $this->userModel->findID($id);
 
         if ($user === null) {
-            redirect('index.php');
+            redirect('/');
         }
 
-        $data = [
-            'fio' => trim($_POST['fio'] ?? ''),
-            'city' => trim($_POST['city'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'login' => trim($_POST['login'] ?? ''),
-            'password' => trim($_POST['password'] ?? ''),
-        ];
+        $data = $this->formData();
 
-        $errors = $this->validate($data, $id);
+        $errors = $this->validator->validate($data, $id);
 
         if ($errors !== []){
             View::render('users/form', [
                 'errors'      => $errors,
                 'user'        => array_merge($user, $data),
                 'formTitle'   => 'Редактирование пользователя',
-                'formAction'  => 'user_edit.php',
+                'formAction'  => '/users/edit',
                 'submitLabel' => 'Изменить',
             ]);
 
@@ -138,6 +99,30 @@ class UserController
         }
 
         $this->userModel->update($id, $data);
-        redirect('index.php');
+        redirect('/');
+    }
+
+    public function delete(): void
+    {
+        require_auth();
+
+        $id = $this->request->getInt('id');
+        if ($id > 0) {
+            $this->userModel->delete($id);
+        }
+
+        redirect('/');
+    }
+
+    private function formData(): array
+    {
+        return [
+            'fio'      => $this->request->postString('fio'),
+            'city'     => $this->request->postString('city'),
+            'phone'    => $this->request->postString('phone'),
+            'email'    => $this->request->postString('email'),
+            'login'    => $this->request->postString('login'),
+            'password' => $this->request->postString('password'),
+        ];
     }
 }
