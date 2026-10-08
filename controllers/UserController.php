@@ -1,5 +1,12 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Request;
+use App\Core\View;
+use App\Models\User;
+use App\Validators\UserValidator;
+
 class UserController
 {
     public function __construct(
@@ -13,13 +20,14 @@ class UserController
         require_auth();
 
         if (!$this->request->isPost()) {
-            View::render('users/form', [
-                'errors' => [],
-                'user' => [],
-                'formTitle' => 'Добавление пользователя',
-                'formAction' => '/users/create',
-                'submitLabel' => 'Добавить',
-            ]);
+            View::render('users/form', $this->formView());
+            return;
+        }
+
+        if (!$this->request->verifyCsrf()) {
+            View::render('users/form', $this->formView([
+                'errors' => ['Сессия истекла, попробуйте еще раз'],
+            ]));
             return;
         }
 
@@ -28,13 +36,9 @@ class UserController
         $errors = $this->validator->validate($data);
 
         if($errors !== []){
-            View::render('users/form', [
-                'errors'      => $errors,
-                'user'        => [],
-                'formTitle'   => 'Добавление пользователя',
-                'formAction'  => '/users/create',
-                'submitLabel' => 'Добавить',
-            ]);
+            View::render('users/form', $this->formView([
+                'errors' => $errors,
+            ]));
             return;
         }
 
@@ -57,16 +61,22 @@ class UserController
                 redirect('/');
             }
 
-            View::render('users/form', [
-            'errors'      => [],
-            'user'        => $user,
-            'formTitle'   => 'Редактирование пользователя',
-            'formAction'  => '/users/edit',
-            'submitLabel' => 'Изменить',
-            ]);
+            View::render('users/form', $this->formView([
+                'user'      => $user,
+                'formTitle' => 'Редактирование пользователя',
+                'formAction' => '/users/edit',
+                'submitLabel' => 'Изменить',
+            ]));
             return;
 
         };
+
+        if (!$this->request->verifyCsrf()) {
+            View::render('users/form', $this->formView([
+                'errors' => ['Сессия истекла, попробуйте еще раз'],
+            ]));
+            return;
+        }
 
         $id = $this->request->postInt('id');
 
@@ -81,13 +91,13 @@ class UserController
         $errors = $this->validator->validate($data, $id);
 
         if ($errors !== []){
-            View::render('users/form', [
+            View::render('users/form', $this->formView([
                 'errors'      => $errors,
                 'user'        => array_merge($user, $data),
                 'formTitle'   => 'Редактирование пользователя',
                 'formAction'  => '/users/edit',
                 'submitLabel' => 'Изменить',
-            ]);
+            ]));
 
             return;
         }
@@ -110,6 +120,18 @@ class UserController
         }
 
         redirect('/');
+    }
+
+    private function formView(array $overrides = []): array
+    {
+        return array_merge([
+            'errors'      => [],
+            'user'        => [],
+            'formTitle'   => 'Добавление пользователя',
+            'formAction'  => '/users/create',
+            'submitLabel' => 'Добавить',
+            'csrfField'   => $this->request->csrfField(),
+        ], $overrides);
     }
 
     private function formData(): array

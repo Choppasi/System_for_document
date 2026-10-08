@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Request;
+use App\Models\Document;
+use App\Models\User;
+
 class HomeController
 {
     public function __construct(

@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Core;
+
+use Throwable;
+
 class Logger
 {
     private const LOG_FILE = __DIR__ . '/../storage/logs/app.log';

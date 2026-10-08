@@ -2,6 +2,19 @@
 
 declare(strict_types=1);
 
+namespace App\Core;
+
+use App\Controllers\AuthorizationController;
+use App\Controllers\DocumentController;
+use App\Controllers\HomeController;
+use App\Controllers\LogController;
+use App\Controllers\UserController;
+use App\Models\Document;
+use App\Models\User;
+use App\Validators\DocumentValidator;
+use App\Validators\UserValidator;
+use Throwable;
+
 class App
 {
     public static function run(): void
@@ -22,22 +35,6 @@ class App
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
-        require __DIR__ . '/Logger.php';
-        require __DIR__ . '/Database.php';
-        require __DIR__ . '/View.php';
-        require __DIR__ . '/Router.php';
-        require __DIR__ . '/Request.php';
-        require __DIR__ . '/helpers.php';
-        require __DIR__ . '/../models/User.php';
-        require __DIR__ . '/../models/Document.php';
-        require __DIR__ . '/../validators/UserValidator.php';
-        require __DIR__ . '/../validators/DocumentValidator.php';
-        require __DIR__ . '/../controllers/HomeController.php';
-        require __DIR__ . '/../controllers/UserController.php';
-        require __DIR__ . '/../controllers/DocumentController.php';
-        require __DIR__ . '/../controllers/AuthorizationController.php';
-        require __DIR__ . '/../controllers/LogController.php';
 
         self::registerErrorHandlers();
 

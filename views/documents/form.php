@@ -1,5 +1,6 @@
 <?php /** @var string $formAction */ ?>
 <?php /** @var mixed $allUsers */ ?>
+<?php /** @var string $csrfField */ ?>
 
 <h1 class="page-title"><?= e($formTitle ?? 'Добавление документа') ?></h1>
 
@@ -13,6 +14,7 @@
 
 <div class="form-card">
     <form method="post" action="<?= e($formAction) ?>">
+        <?= $csrfField ?>
         <?php if (!empty($doc['id'])): ?>
             <input type="hidden" name="id" value="<?= e($doc['id']) ?>">
         <?php endif; ?>

@@ -1,5 +1,13 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Request;
+use App\Core\View;
+use App\Models\Document;
+use App\Models\User;
+use App\Validators\DocumentValidator;
+
 class DocumentController
 {
     public function __construct(
@@ -16,14 +24,14 @@ class DocumentController
         $allUsers = $this->userModel->allForSelect();
 
         if (!$this->request->isPost()) {
-            View::render('documents/form', [
-                'errors'      => [],
-                'doc'         => [],
-                'allUsers'    => $allUsers,
-                'formTitle'   => 'Добавление документа',
-                'formAction'  => '/documents/create',
-                'submitLabel' => 'Добавить',
-            ]);
+            View::render('documents/form', $this->formView($allUsers));
+            return;
+        }
+
+        if (!$this->request->verifyCsrf()) {
+            View::render('documents/form', $this->formView($allUsers, [
+                'errors' => ['Сессия истекла, попробуйте еще раз'],
+            ]));
             return;
         }
 
@@ -32,14 +40,10 @@ class DocumentController
         $errors = $this->validator->validate($data);
 
         if ($errors !== []) {
-            View::render('documents/form', [
-                'errors'      => $errors,
-                'doc'         => $data,
-                'allUsers'    => $allUsers,
-                'formTitle'   => 'Добавление документа',
-                'formAction'  => '/documents/create',
-                'submitLabel' => 'Добавить',
-            ]);
+            View::render('documents/form', $this->formView($allUsers, [
+                'errors' => $errors,
+                'doc'    => $data,
+            ]));
             return;
         }
 
@@ -61,14 +65,19 @@ class DocumentController
                 redirect('/');
             }
 
-            View::render('documents/form', [
-                'errors'      => [],
+            View::render('documents/form', $this->formView($allUsers, [
                 'doc'         => $doc,
-                'allUsers'    => $allUsers,
                 'formTitle'   => 'Редактирование документа',
                 'formAction'  => '/documents/edit',
                 'submitLabel' => 'Изменить',
-            ]);
+            ]));
+            return;
+        }
+
+        if (!$this->request->verifyCsrf()) {
+            View::render('documents/form', $this->formView($allUsers, [
+                'errors' => ['Сессия истекла, попробуйте еще раз'],
+            ]));
             return;
         }
 
@@ -84,14 +93,13 @@ class DocumentController
         $errors = $this->validator->validate($data);
 
         if ($errors !== []) {
-            View::render('documents/form', [
+            View::render('documents/form', $this->formView($allUsers, [
                 'errors'      => $errors,
                 'doc'         => array_merge($doc, $data),
-                'allUsers'    => $allUsers,
                 'formTitle'   => 'Редактирование документа',
                 'formAction'  => '/documents/edit',
                 'submitLabel' => 'Изменить',
-            ]);
+            ]));
             return;
         }
 
@@ -109,6 +117,19 @@ class DocumentController
         }
 
         redirect('/');
+    }
+
+    private function formView(array $allUsers, array $overrides = []): array
+    {
+        return array_merge([
+            'errors'      => [],
+            'doc'         => [],
+            'allUsers'    => $allUsers,
+            'formTitle'   => 'Добавление документа',
+            'formAction'  => '/documents/create',
+            'submitLabel' => 'Добавить',
+            'csrfField'   => $this->request->csrfField(),
+        ], $overrides);
     }
 
     private function formData(): array

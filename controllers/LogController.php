@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\View;
+
 class LogController
 {
     private const LOG_FILE  = __DIR__ . '/../storage/logs/app.log';

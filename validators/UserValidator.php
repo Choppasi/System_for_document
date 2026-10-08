@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Validators;
+
+use App\Models\User;
+
 class UserValidator
 {
     public function __construct(private User $userModel) {}

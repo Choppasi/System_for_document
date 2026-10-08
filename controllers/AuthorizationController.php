@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Request;
+use App\Core\View;
+use App\Models\User;
+
 class AuthorizationController
 {
     public function __construct(

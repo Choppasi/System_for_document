@@ -1,6 +1,8 @@
 <?php
 
-Class View
+namespace App\Core;
+
+class View
 {
     public static function render(string $template, array $data = []): void
     {

@@ -1,5 +1,5 @@
 <?php /** @var mixed $logFile */ ?>
-<?php /** @var array<int> $lines */ ?>
+<?php /** @var array<int, string> $lines */ ?>
 <div class="section">
     <h1 class="page-title">Логи ошибок</h1>
 

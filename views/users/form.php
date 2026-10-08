@@ -1,5 +1,6 @@
 <?php /** @var string $formAction */ ?>
 <?php /** @var array<string, mixed> $user */ ?>
+<?php /** @var string $csrfField */ ?>
 
 <h1 class="page-title"><?= e($formTitle ?? 'Добавление пользователя') ?></h1>
 
@@ -13,6 +14,7 @@
 
 <div class="form-card">
     <form method="post" action="<?= e($formAction) ?>">
+        <?= $csrfField ?>
         <?php if (!empty($user['id'])): ?>
             <input type="hidden" name="id" value="<?= e($user['id']) ?>">
         <?php endif; ?>
