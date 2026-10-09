@@ -4,15 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-/**
- * Простой автозагрузчик классов в стиле PSR-4.
- *
- * Сопоставляет префикс namespace с базовой директорией и подключает
- * файл по имени класса при первом обращении к нему.
- */
 final class Autoloader
 {
-    /** @var array<string, string> префикс namespace => базовая директория */
     private array $prefixes = [];
 
     public function addNamespace(string $prefix, string $baseDir): self
